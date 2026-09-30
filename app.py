@@ -49,7 +49,7 @@ app.layout = html.Div([
 )
 def update_graph(value, y_select):
     dff = df[df['country'].isin(value)]
-    return px.line(dff, x='year', y=y_select, color='country')
+    return px.line(dff, x='year', y=y_select, hover_name='country', line_group='country')
 # Пузырьковая диаграмма с выбором осей и радиусом
 @callback(
     Output('graph-bubble', 'figure'),
@@ -58,11 +58,11 @@ def update_graph(value, y_select):
     Input('controls-bubble-y', 'value'),
     Input('controls-bubble-size', 'value'),
     Input('dropdown-selection-year', 'value')
-    
+
 )
 def update_bubble(value, x_select, y_select, size, year):
     dff = df[df['country'].isin(value) & (df['year'] >= year)] # >= так как много годов пропущено
-    return px.scatter(dff, x=x_select, y=y_select, color='country', size = size)
+    return px.scatter(dff, x=x_select, y=y_select, hover_name='country', size = size)
 
 # Топ 15 по населению
 @callback(
@@ -71,7 +71,7 @@ def update_bubble(value, x_select, y_select, size, year):
 )
 def top15(year):
   dff = df[df['year'] == year].sort_values('pop', ascending=False).head(15)
-  return px.bar(dff, x = 'country', y = 'pop', color = 'country')
+  return px.bar(dff, x = 'country', y = 'pop', hover_name='country')
 
 # Круговая диаграмма по континенту
 @callback(
@@ -83,5 +83,9 @@ def continent(year):
   return px.pie(dff, values = 'pop', names='continent')
 
 
+import os
+
 if __name__ == '__main__':
     app.run(debug=True)
+else:
+    server = app.server
